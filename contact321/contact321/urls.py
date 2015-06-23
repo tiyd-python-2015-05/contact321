@@ -19,6 +19,7 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r'contacts', views.ContactViewSet)
+router.register(r'users', views.UserViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
