@@ -5,9 +5,10 @@ class EmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Email
 
-class PhoneSerializer(serializers.ModelSerializer):
+class PhoneSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Phone
+        fields = ('url', 'phone', 'kind', 'contact')
 
 class ContactSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
