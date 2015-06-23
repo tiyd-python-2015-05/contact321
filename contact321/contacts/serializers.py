@@ -24,9 +24,7 @@ class PhoneSerializer(serializers.ModelSerializer):
 class ContactSerializer(serializers.HyperlinkedModelSerializer):
     emails = EmailSerializer(many=True, read_only=True)
     phones = PhoneSerializer(many=True, read_only=True)
-    # owner = serializers.PrimaryKeyRelatedField(read_only=True)
+    owner = serializers.HyperlinkedRelatedField(read_only=True, view_name='user-detail')
 
     class Meta:
         model = Contact
-        # fields = ('id', 'url', 'name', 'nickname', 'website', 'notes', 'emails', 'phones')
-        # fields = ('id', 'url', 'name', 'nickname', 'website', 'notes',)
