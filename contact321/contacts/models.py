@@ -13,7 +13,7 @@ class Contact(models.Model):
 
 
 class Email(models.Model):
-    contact = models.ForeignKey(Contact, related_name="contacts")
+    contact = models.ForeignKey(Contact, related_name="emails")
     email = models.EmailField()
     kind = models.CharField(max_length=20, blank=True)
 
