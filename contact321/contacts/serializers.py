@@ -37,7 +37,9 @@ class PhoneWithContactSerializer(serializers.HyperlinkedModelSerializer):
 class ContactSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
     emails = EmailSerializer(many=True, read_only=True)
+    email_count = serializers.IntegerField(read_only=True)
     phones = PhoneSerializer(many=True, read_only=True)
+    phone_count = serializers.IntegerField(read_only=True)
     _links = SerializerMethodField()
 
     def get__links(self, obj):
@@ -48,8 +50,25 @@ class ContactSerializer(serializers.HyperlinkedModelSerializer):
                               request=self.context.get('request'))}
         return links
 
+    # How to prevent querysets not being annotated from blowing up:
+    #
+    # email_count = SerializerMethodField()
+    # phone_count = SerializerMethodField()
+    #
+    # def get_email_count(self, obj):
+    #     try:
+    #         return obj.email_count
+    #     except AttributeError:
+    #         return obj.emails.count()
+    #
+    # def get_phone_count(self, obj):
+    #     try:
+    #         return obj.phone_count
+    #     except AttributeError:
+    #         return obj.phones.count()
+
     class Meta:
         model = Contact
         fields = (
             'id', 'url', 'name', 'website', 'notes', 'owner', 'emails',
-            'phones', '_links')
+            'phones', 'email_count', 'phone_count', '_links')

@@ -2,12 +2,15 @@ from contacts.models import Contact, Phone, Email
 from contacts.serializers import ContactSerializer, PhoneSerializer, \
     PhoneWithContactSerializer, EmailSerializer, EmailWithContactSerializer
 from contacts.permissions import IsOwnerOrReadOnly, OwnsRelatedContact
+from django.db.models import Count
 from rest_framework import viewsets, permissions, generics
 from rest_framework.exceptions import PermissionDenied
 
 
 class ContactViewSet(viewsets.ModelViewSet):
-    queryset = Contact.objects.all()
+    queryset = Contact.objects.annotate(
+        email_count=Count('emails', distinct=True),
+        phone_count=Count('phones', distinct=True))
     serializer_class = ContactSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly)

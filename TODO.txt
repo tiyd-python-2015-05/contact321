@@ -1,6 +1,6 @@
 Add derived fields
 Require authentication for all access
 Only allow users to see their own contacts
-Add token-based authentication
 Add pagination
 Add search and filtering (http://www.django-rest-framework.org/api-guide/filtering/#generic-filtering)
+Add token-based authentication
