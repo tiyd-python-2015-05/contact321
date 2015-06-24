@@ -25,7 +25,11 @@ urlpatterns = [
         include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include(router.urls)),
     url(r'^contacts/(?P<contact_pk>\d+)/phones/$',
-        views.PhoneListCreateView.as_view(), name="phone-create"),
-    url(r'^phones/(?P<pk>\d+)$', views.PhoneDetailView.as_view(),
+        views.PhoneListCreateView.as_view(), name="phone-list"),
+    url(r'^phones/(?P<pk>\d+)/$', views.PhoneDetailView.as_view(),
         name="phone-detail"),
+    url(r'^contacts/(?P<contact_pk>\d+)/emails/$',
+        views.EmailListCreateView.as_view(), name="email-list"),
+    url(r'^emails/(?P<pk>\d+)/$', views.EmailDetailView.as_view(),
+        name="email-detail"),
 ]

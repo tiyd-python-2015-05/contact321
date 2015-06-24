@@ -4,9 +4,19 @@ from rest_framework.fields import SerializerMethodField
 from rest_framework.reverse import reverse
 
 
-class EmailSerializer(serializers.ModelSerializer):
+class EmailSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Email
+        fields = ('url', 'email', 'kind')
+
+
+class EmailWithContactSerializer(serializers.HyperlinkedModelSerializer):
+    contact = serializers.HyperlinkedRelatedField(read_only=True,
+                                                  view_name='contact-detail')
+
+    class Meta:
+        model = Email
+        fields = ('url', 'email', 'kind', 'contact')
 
 
 class PhoneSerializer(serializers.HyperlinkedModelSerializer):
@@ -32,7 +42,9 @@ class ContactSerializer(serializers.HyperlinkedModelSerializer):
 
     def get__links(self, obj):
         links = {
-            "phones": reverse('phone-create', kwargs=dict(contact_pk=obj.pk),
+            "phones": reverse('phone-list', kwargs=dict(contact_pk=obj.pk),
+                              request=self.context.get('request')),
+            "emails": reverse('email-list', kwargs=dict(contact_pk=obj.pk),
                               request=self.context.get('request'))}
         return links
 
