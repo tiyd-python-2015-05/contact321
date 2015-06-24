@@ -18,7 +18,7 @@ from django.conf.urls import include, url
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register(r'contacts', views.ContactViewSet)
+router.register(r'contacts', views.ContactViewSet, base_name="contact")
 
 urlpatterns = [
     url(r'^api-auth/',

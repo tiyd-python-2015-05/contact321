@@ -8,12 +8,14 @@ from rest_framework.exceptions import PermissionDenied
 
 
 class ContactViewSet(viewsets.ModelViewSet):
-    queryset = Contact.objects.annotate(
-        email_count=Count('emails', distinct=True),
-        phone_count=Count('phones', distinct=True))
     serializer_class = ContactSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+    permission_classes = (permissions.IsAuthenticated,
                           IsOwnerOrReadOnly)
+
+    def get_queryset(self):
+        return Contact.objects.filter(owner=self.request.user).annotate(
+            email_count=Count('emails', distinct=True),
+            phone_count=Count('phones', distinct=True))
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
