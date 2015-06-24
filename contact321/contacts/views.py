@@ -1,5 +1,6 @@
 from contacts.models import Contact, Phone
-from contacts.serializers import ContactSerializer, PhoneSerializer
+from contacts.serializers import ContactSerializer, PhoneSerializer, \
+    PhoneWithContactSerializer
 from contacts.permissions import IsOwnerOrReadOnly, OwnsRelatedContact
 from rest_framework import viewsets, permissions, generics
 from rest_framework.exceptions import PermissionDenied
@@ -15,19 +16,25 @@ class ContactViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
 
-class PhoneCreateView(generics.CreateAPIView):
+class PhoneListCreateView(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = PhoneSerializer
 
+    def initial(self, request, *args, **kwargs):
+        self.contact = Contact.objects.get(pk=kwargs['contact_pk'])
+        super().initial(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return self.contact.phones
+
     def perform_create(self, serializer):
-        contact = serializer.validated_data['contact']
-        if self.request.user != contact.owner:
+        if self.request.user != self.contact.owner:
             raise PermissionDenied
-        serializer.save()
+        serializer.save(contact=self.contact)
 
 
 class PhoneDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated,
                           OwnsRelatedContact)
-    serializer_class = PhoneSerializer
+    serializer_class = PhoneWithContactSerializer
     queryset = Phone.objects.all()

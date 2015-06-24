@@ -21,8 +21,11 @@ router = routers.DefaultRouter()
 router.register(r'contacts', views.ContactViewSet)
 
 urlpatterns = [
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api-auth/',
+        include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include(router.urls)),
-    url(r'^phones/$', views.PhoneCreateView.as_view()),
-    url(r'^phones/(?P<pk>\d+)$', views.PhoneDetailView.as_view(), name="phone-detail")
+    url(r'^contacts/(?P<contact_pk>\d+)/phones/$',
+        views.PhoneListCreateView.as_view(), name="phone-create"),
+    url(r'^phones/(?P<pk>\d+)$', views.PhoneDetailView.as_view(),
+        name="phone-detail"),
 ]
