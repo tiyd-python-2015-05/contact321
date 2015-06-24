@@ -3,14 +3,27 @@ from contacts.serializers import ContactSerializer, PhoneSerializer, \
     PhoneWithContactSerializer, EmailSerializer, EmailWithContactSerializer
 from contacts.permissions import IsOwnerOrReadOnly, OwnsRelatedContact
 from django.db.models import Count
-from rest_framework import viewsets, permissions, generics
+from rest_framework import viewsets, permissions, generics, filters
 from rest_framework.exceptions import PermissionDenied
+import django_filters
+
+
+class ContactFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(name="name", lookup_type="icontains")
+    notes = django_filters.CharFilter(name="notes", lookup_type="icontains")
+
+    class Meta:
+        model = Contact
+        fields = ['name', 'notes']
 
 
 class ContactViewSet(viewsets.ModelViewSet):
+    """Use name and notes GET parameters to filter."""
     serializer_class = ContactSerializer
     permission_classes = (permissions.IsAuthenticated,
                           IsOwnerOrReadOnly)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_class = ContactFilter
 
     def get_queryset(self):
         return Contact.objects.filter(owner=self.request.user).annotate(
