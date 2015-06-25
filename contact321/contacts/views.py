@@ -43,7 +43,7 @@ class PhoneListCreateView(generics.ListCreateAPIView):
         super().initial(request, *args, **kwargs)
 
     def get_queryset(self):
-        return self.contact.phones
+        return self.contact.phones.all()
 
     def perform_create(self, serializer):
         if self.request.user != self.contact.owner:
@@ -67,7 +67,7 @@ class EmailListCreateView(generics.ListCreateAPIView):
         super().initial(request, *args, **kwargs)
 
     def get_queryset(self):
-        return self.contact.emails
+        return self.contact.emails.all()
 
     def perform_create(self, serializer):
         if self.request.user != self.contact.owner:
